@@ -26,8 +26,8 @@ Route::group([
 		Route::get('logout', "AdminController@logout");
 		Route::get('getall', 'AdminController@getAll');
 		Route::get('get/{id}', 'AdminController@get');
-		Route::post('edit', 'AdminController@edit');
-		Route::delete('delete', 'AdminController@remove');
+		Route::put('edit', 'AdminController@edit');
+		Route::delete('delete/{id}', 'AdminController@remove');
 	});
 });
 

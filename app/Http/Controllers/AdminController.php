@@ -1,5 +1,14 @@
 <?php
-
+/**
+ * AdminController
+ * php version 7.3.17
+ *
+ * @category AdminController
+ * @package  E-commerce
+ * @author   Nalin Vaidya <nalinvaidya@gmail.com>
+ * @license  https://github.com/nalinv123/ecommerce-api None
+ * @link     https://github.com/nalinv123/ecommerce-api
+ */
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -9,12 +18,32 @@ use Carbon\Carbon;
 use App\User as Admin;
 use Validator;
 
+/**
+ * AdminController
+ * 
+ * @category AdminController
+ * @package  E-commerce
+ * @author   Nalin Vaidya <nalinvaidya@gmail.com>
+ * @license  https://github.com/nalinv123/ecommerce-api None
+ * @link     https://github.com/nalinv123/ecommerce-api
+ */
 class AdminController extends Controller
 {
+    
+    /**
+     * Create an admin user.
+     *
+     * @param Request $request Request object containing user input.
+     * 
+     * @return void
+     */
     public function create(Request $request)
     {
 
-        Log::info("Create admin user request with ", array('request' => $request->all()));
+        Log::info(
+            "Create admin user request with ", 
+            array('request' => $request->all())
+        );
 
         $validator = Validator::make(
             $request->all(), [
@@ -27,7 +56,7 @@ class AdminController extends Controller
         );
 
         if ($validator->fails()) {
-            return $this->sendError("Validation error.", $validator->errors());
+            return $this->sendError("Validation error.", $validator->errors(), 422);
         }
 
         $admin_user = new Admin(
@@ -44,11 +73,21 @@ class AdminController extends Controller
 
         return $this->sendResponse("Success", "Admin user successfully created.");
     }
-
+    
+    /**
+     * Authenticate an admin user.
+     *
+     * @param Request $request Request object containing user input.
+     * 
+     * @return void
+     */
     public function authenticate(Request $request)
     {
 
-        Log::info("Admin user authenticate request with ", array('request' => $request->all()));
+        Log::info(
+            "Admin user authenticate request with ",
+            array('request' => $request->all())
+        );
 
         $validator = Validator::make(
             $request->all(), [
@@ -59,7 +98,7 @@ class AdminController extends Controller
         );
 
         if ($validator->fails()) {
-            return $this->sendError("Validation error.", $validator->errors());
+            return $this->sendError("Validation error.", $validator->errors(), 422);
         }
 
         $credentials = request(['email', 'password']);
@@ -89,37 +128,110 @@ class AdminController extends Controller
 
         return $this->sendResponse($response, "User authenticated");
     }
-
+    
+    /**
+     * Logout admin user.
+     *
+     * @param Request $request Request object containing user input.
+     * 
+     * @return void
+     */
     public function logout(Request $request)
     {
         $request->user()->token()->revoke();
 
         return $this->sendResponse("", "User successfully logged out.");
     }
-
+    
+    /**
+     * Fetch all admin users.
+     *
+     * @return void
+     */
     public function getAll()
     {
         $response = Admin::all();
         return $this->sendResponse($response->toArray(), "");
     }
-
+    
+    /**
+     * Fetch specific admin user by Id.
+     *
+     * @param int $id Admin user Id.
+     * 
+     * @return void
+     */
     public function get($id)
     {
         $response = Admin::find($id);
         if ($response) {
             return $this->sendResponse($response->toArray(), "");
         } else {
-            return $this->sendResponse([], "Not found");
+            return $this->sendError("Not found");
         }
     }
-
+    
+    /**
+     * Update / Edit admin User
+     *
+     * @param Request $request Request object containing user input.
+     * 
+     * @return void
+     */
     public function edit(Request $request)
     {
+        $validator = Validator::make(
+            $request->all(), [
+            'id' => 'required|integer',
+                'username' => 'required|string',
+                'firstname' => 'required|string',
+                'lastname' => 'required|string',
+                'email' => 'required|string|email',
+                'password' => 'required|string|confirmed'
+            ]
+        );
 
+        if ($validator->fails()) {
+            return $this->sendError("Validation error.", $validator->errors(), 422);
+        }
+        
+        $admin = Admin::find($request->id);
+        if ($admin) {
+            $admin->username = $request->username;
+            $admin->firstname = $request->firstname;
+            $admin->lastname = $request->lastname;
+            $admin->email = $request->email;
+
+            $admin->save();
+            return $this->sendResponse("", "Admin user updated successfully");
+        } else {
+            return $this->sendError("Not found");
+        }
     }
-
-    public function remove(Request $request)
+    
+    /**
+     * Removes specific admin user by Id.
+     *
+     * @param int $id Admin user id.
+     * 
+     * @return void
+     */
+    public function remove($id)
     {
-
+        if (Auth::user()->id === $id) {
+            return $this->sendError(
+                "You cannot delete currently logged in administrator",
+                [],
+                403
+            );
+        } else {
+            $admin = Admin::find($id);
+            if ($admin) {
+                $admin->delete();
+                return $this->sendResponse("", "Admin user deleted");
+            } else {
+                return $this->sendError("Not found");
+            }
+        }
     }
 }
