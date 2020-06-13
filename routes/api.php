@@ -14,6 +14,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::group([
+	'prefix' => 'admin'
+], function () {
+	Route::post('create', 'AdminController@create');
+	Route::post('authenticate', 'AdminController@authenticate');
+
+	Route::group([
+		'middleware' => 'auth:api'
+	], function () {
+		Route::get('logout', "AdminController@logout");
+		Route::get('getall', 'AdminController@getAll');
+		Route::get('get/{id}', 'AdminController@get');
+		Route::post('edit', 'AdminController@edit');
+		Route::delete('delete', 'AdminController@remove');
+	});
+});
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
