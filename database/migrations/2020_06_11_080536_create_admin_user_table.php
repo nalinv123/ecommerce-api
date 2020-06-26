@@ -13,7 +13,7 @@ class CreateAdminUserTable extends Migration
      */
     public function up()
     {
-        Schema::create('admin_user', function (Blueprint $table) {
+        Schema::create('user', function (Blueprint $table) {
 			$table->id();
 			$table->string('username');
 			$table->string('firstname');
@@ -21,6 +21,8 @@ class CreateAdminUserTable extends Migration
 			$table->string('email')->unique();
 			$table->string('password');
 			$table->rememberToken();
+			$table->unsignedBigInteger('user_role_id');
+			$table->foreign('user_role_id')->references('id')->on('user_role');
             $table->timestamps();
         });
     }

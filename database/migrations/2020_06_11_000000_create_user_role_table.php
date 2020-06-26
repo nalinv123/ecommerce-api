@@ -20,8 +20,13 @@ class CreateUserRoleTable extends Migration
 		
 		DB::table('user_role')->insert(
 			array(
-				"name" => "customer"
-			)
+				array(
+					"name" => "admin"
+				),
+				array(
+					"name" => "customer",
+				)
+			),
 		);
     }
 
