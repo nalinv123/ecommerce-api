@@ -50,8 +50,9 @@ class AdminController extends Controller
             'username' => 'required|string',
             'firstname' => 'required|string',
             'lastname' => 'required|string',
-            'email' => 'required|string|email|unique:admin_user',
-            'password' => 'required|string|confirmed'
+            'email' => 'required|string|email|unique:user',
+            'password' => 'required|string|confirmed',
+            'user_role_id' => 'required|integer'
             ]
         );
 
@@ -65,7 +66,8 @@ class AdminController extends Controller
             'firstname' => $request->firstname,
             'lastname' => $request->lastname,
             'email' => $request->email,
-            'password' => bcrypt($request->password)
+            'password' => bcrypt($request->password),
+            'user_role_id' => $request->user_role_id
             ]
         );
 
@@ -182,12 +184,10 @@ class AdminController extends Controller
     {
         $validator = Validator::make(
             $request->all(), [
-            'id' => 'required|integer',
+                'id' => 'required|integer',
                 'username' => 'required|string',
                 'firstname' => 'required|string',
                 'lastname' => 'required|string',
-                'email' => 'required|string|email',
-                'password' => 'required|string|confirmed'
             ]
         );
 
