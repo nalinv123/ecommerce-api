@@ -152,7 +152,7 @@ class CustomerController extends Controller
      */
     public function getAll()
     {
-        $response = Customer::all();
+        $response = Customer::where('user_role_id', 2)->get();
         return $this->sendResponse($response->toArray(), "");
     }
     
@@ -166,7 +166,7 @@ class CustomerController extends Controller
     public function get($id)
     {
         $response = Customer::find($id);
-        if ($response) {
+        if ($response->user_role_id === 2) {
             return $this->sendResponse($response->toArray(), "");
         } else {
             return $this->sendError("Not found");
@@ -196,14 +196,13 @@ class CustomerController extends Controller
         }
         
         $customer = Customer::find($request->id);
-        if ($customer) {
+        if ($customer->user_role_id === 2) {
             $customer->username = $request->username;
             $customer->firstname = $request->firstname;
             $customer->lastname = $request->lastname;
-            $customer->email = $request->email;
 
             $customer->save();
-            return $this->sendResponse("", "Customer updated successfully");
+            return $this->sendResponse($customer, "Customer updated successfully");
         } else {
             return $this->sendError("Not found");
         }
