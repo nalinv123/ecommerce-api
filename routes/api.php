@@ -51,6 +51,26 @@ Route::group([
 		Route::get('get/{id}', 'CustomerController@get');
 		Route::put('edit', 'CustomerController@edit');
 	});
+
+	Route::group([
+		'prefix' => 'billing',
+		'middleware' => ['auth:api']
+	], function () {
+		Route::post('add', 'BillingAddressController@add');
+		Route::get('getall/{id}', 'BillingAddressController@getAll');
+		Route::put('edit', 'BillingAddressController@edit');
+		Route::delete('delete', 'BillingAddressController@remove');
+	});
+
+	Route::group([
+		'prefix' => 'shipping',
+		'middleware' => ['auth:api']
+	], function () {
+		Route::post('add', 'ShippingAddressController@add');
+		Route::get('getall/{id}', 'ShippingAddressController@getAll');
+		Route::put('edit', 'ShippingAddressController@edit');
+		Route::delete('delete', 'ShippingAddressController@remove');
+	});
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
