@@ -73,6 +73,28 @@ Route::group([
 	});
 });
 
+Route::group([
+	'prefix' => 'category',
+	'middleware' => ['auth:api', 'admin']
+], function () {
+	Route::post('add', 'CategoryController@add');
+	Route::get('get/{id}', 'CategoryController@get');
+	Route::get('getall', 'CategoryController@getAll');
+	Route::put('edit', 'CategoryController@edit');
+	Route::delete('delete', 'CategoryController@remove');
+});
+
+Route::group([
+	'prefix' => 'product',
+	'middleware' => ['auth:api', 'admin']
+], function () {
+	Route::post('add', 'ProductController@add');
+	Route::get('get/{id}', 'ProductController@get');
+	Route::get('getall', 'ProductController@getAll');
+	Route::put('edit', 'ProductController@edit');
+	Route::delete('delete', 'ProductController@remove');
+});
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
