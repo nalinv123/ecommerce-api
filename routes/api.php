@@ -91,7 +91,7 @@ Route::group([
 	Route::post('add', 'ProductController@add');
 	Route::get('get/{id}', 'ProductController@get');
 	Route::get('getall', 'ProductController@getAll');
-	Route::put('edit', 'ProductController@edit');
+	Route::post('edit', 'ProductController@edit');
 	Route::delete('delete', 'ProductController@remove');
 });
 
