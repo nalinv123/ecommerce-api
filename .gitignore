@@ -13,3 +13,6 @@ yarn-error.log
 .DS_Store*
 .vscode
 .idea
+public/product_images/large/*
+public/product_images/medium/*
+public/product_images/small/*
